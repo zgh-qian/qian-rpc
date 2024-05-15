@@ -5,7 +5,7 @@ import java.io.*;
 /**
  * JDK序列化实现
  */
-public class JdkSerializerImpl implements Serializer {
+public class JdkSerializer implements Serializer {
     /**
      * 序列化
      *

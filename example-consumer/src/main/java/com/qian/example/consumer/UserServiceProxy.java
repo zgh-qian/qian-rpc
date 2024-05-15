@@ -6,7 +6,7 @@ import com.qian.example.common.model.User;
 import com.qian.example.common.service.UserService;
 import com.qian.qianrpc.model.RpcRequest;
 import com.qian.qianrpc.model.RpcResponse;
-import com.qian.qianrpc.serializer.JdkSerializerImpl;
+import com.qian.qianrpc.serializer.JdkSerializer;
 import com.qian.qianrpc.serializer.Serializer;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class UserServiceProxy implements UserService {
     @Override
     public User getUser(User user) {
         // 指定序列化器
-        Serializer serializer = new JdkSerializerImpl();
+        Serializer serializer = new JdkSerializer();
         // 发起请求
         RpcRequest rpcRequest = RpcRequest.builder()
                 .serviceName(UserService.class.getName())

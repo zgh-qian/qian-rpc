@@ -1,0 +1,2 @@
+no=com.qian.qianrpc.fault.retry.NoRetryStrategy
+fixedInterval=com.qian.qianrpc.fault.retry.FixedIntervalRetryStrategy

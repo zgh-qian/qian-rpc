@@ -1,10 +1,12 @@
 package com.qian.qianrpc.server;
 
+import com.qian.qianrpc.RpcApplication;
 import com.qian.qianrpc.model.RpcRequest;
 import com.qian.qianrpc.model.RpcResponse;
 import com.qian.qianrpc.registry.LocalRegistry;
-import com.qian.qianrpc.serializer.JdkSerializerImpl;
+import com.qian.qianrpc.serializer.JdkSerializer;
 import com.qian.qianrpc.serializer.Serializer;
+import com.qian.qianrpc.serializer.SerializerFactory;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerRequest;
@@ -20,7 +22,7 @@ public class HttpServerHandler implements Handler<HttpServerRequest> {
     @Override
     public void handle(HttpServerRequest request) {
         // 指定序列化器
-        final Serializer serializer = new JdkSerializerImpl();
+        final Serializer serializer = SerializerFactory.getInstance(RpcApplication.getRpcConfig().getSerializer());
 
         // 记录日志
         System.out.println("Received request: " + request.method() + " " + request.uri());

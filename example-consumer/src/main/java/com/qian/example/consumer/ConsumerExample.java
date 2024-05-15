@@ -10,7 +10,7 @@ public class ConsumerExample {
     public static void main(String[] args) {
         //RpcConfig rpc = ConfigUtils.loadConfig(RpcConfig.class, "rpc");
         // 获取代理
-        UserService userService = ServiceProxyFactory.getMockProxy(UserService.class);
+        UserService userService = ServiceProxyFactory.getProxy(UserService.class);
         User user = new User();
         user.setName("zgh");
         // 调用
