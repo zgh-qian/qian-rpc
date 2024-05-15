@@ -2,14 +2,16 @@ package com.qian.example.consumer;
 
 import com.qian.example.common.model.User;
 import com.qian.example.common.service.UserService;
+import com.qian.qianrpc.config.RpcConfig;
 import com.qian.qianrpc.proxy.ServiceProxyFactory;
+import com.qian.qianrpc.utils.ConfigUtils;
 
 /**
  * 简易消费者示例
  */
 public class EasyConsumerExample {
     public static void main(String[] args) {
-        // todo 需要获取 UserService 的实现类对象
+        // 需要获取 UserService 的实现类对象
         //UserService userService = null;
         // 静态代理
         // UserService userService = new UserServiceProxy();

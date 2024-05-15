@@ -7,10 +7,10 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>example-provider</artifactId>
+    <artifactId>qian-rpc-core</artifactId>
     <packaging>jar</packaging>
 
-    <name>example-provider</name>
+    <name>qian-rpc-core</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -19,14 +19,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.qian</groupId>
-            <artifactId>qian-rpc-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.qian</groupId>
-            <artifactId>example-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+            <version>4.5.1</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -38,6 +33,11 @@
             <artifactId>lombok</artifactId>
             <version>1.16.18</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.3.12</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

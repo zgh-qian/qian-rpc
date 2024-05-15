@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>com.qian</groupId>
-            <artifactId>qian-rpc-easy</artifactId>
+            <artifactId>qian-rpc-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
