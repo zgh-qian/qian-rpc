@@ -126,7 +126,9 @@ public class SpiLoader {
     public static void main(String[] args) {
         loadAll();
         System.out.println(loaderMap);
+        // 正确获取到 Serializer 实例
         Serializer serializer = getInstance(Serializer.class, "jdk");
+        // 错误获取到 Serializer 实例
         //Serializer serializer = getInstance(Serializer.class, "e");
         System.out.println(serializer);
     }
