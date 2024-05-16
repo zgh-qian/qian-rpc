@@ -7,6 +7,8 @@ import cn.hutool.http.HttpResponse;
 import com.qian.qianrpc.RpcApplication;
 import com.qian.qianrpc.config.RpcConfig;
 import com.qian.qianrpc.constant.RpcConstant;
+import com.qian.qianrpc.loadbalancer.LoadBalancer;
+import com.qian.qianrpc.loadbalancer.LoadBalancerFactory;
 import com.qian.qianrpc.model.RpcRequest;
 import com.qian.qianrpc.model.RpcResponse;
 import com.qian.qianrpc.model.ServiceMetaInfo;
@@ -24,7 +26,9 @@ import io.vertx.core.net.NetSocket;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -53,8 +57,12 @@ public class ServiceProxy implements InvocationHandler {
             if (CollUtil.isEmpty(serviceMetaInfoList)) {
                 throw new RuntimeException("暂无服务提供者");
             }
-            // todo 先选择第一个
-            ServiceMetaInfo selectedServiceMetaInfo = serviceMetaInfoList.get(0);
+            // 负载均衡
+            LoadBalancer loadBalancer = LoadBalancerFactory.getInstance(rpcConfig.getLoadBalancer());
+            // 将调用方法名（请求路径）作为负载均衡参数
+            Map<String, Object> requestParams = new HashMap<>();
+            requestParams.put("methodName", rpcRequest.getMethodName());
+            ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParams, serviceMetaInfoList);
             // HTTP 请求
             /*
             // 指定序列化器
