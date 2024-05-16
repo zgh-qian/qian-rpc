@@ -12,6 +12,14 @@
 
 <img src="README/image-20240515230319061.png" alt="image-20240515230319061" style="zoom:30%;" />
 
+## 消息结构设计
+
+<img src="README/image-20240516211745407.png" alt="image-20240516211745407" style="zoom:30%;" />
+
+## 消息传递
+
+<img src="README/image-20240516214948654.png" alt="image-20240516214948654" style="zoom:50%;" />
+
 ## 环境
 
 Java version: 11

@@ -3,7 +3,7 @@ package com.qian.example.provider;
 import com.qian.example.common.service.UserService;
 import com.qian.qianrpc.registry.LocalRegistry;
 import com.qian.qianrpc.server.HttpServer;
-import com.qian.qianrpc.server.VertxHttpServer;
+import com.qian.qianrpc.server.http.VertxHttpServer;
 
 /**
  * 简易服务提供者示例

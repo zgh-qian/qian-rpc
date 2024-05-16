@@ -9,7 +9,8 @@ import com.qian.qianrpc.registry.LocalRegistry;
 import com.qian.qianrpc.registry.Registry;
 import com.qian.qianrpc.registry.RegistryFactory;
 import com.qian.qianrpc.server.HttpServer;
-import com.qian.qianrpc.server.VertxHttpServer;
+import com.qian.qianrpc.server.http.VertxHttpServer;
+import com.qian.qianrpc.server.tcp.VertxTcpServer;
 
 public class ProviderExample {
     public static void main(String[] args) {
@@ -31,8 +32,18 @@ public class ProviderExample {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        // 启动 Web 服务
-        HttpServer httpServer = new VertxHttpServer();
-        httpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
+        startTCPServer();
+    }
+
+    private static void startHTTPServer() {
+        // 启动 HTTP 服务
+        HttpServer vertxHttpServer = new VertxHttpServer();
+        vertxHttpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
+    }
+
+    private static void startTCPServer() {
+        // 启动 HTTP 服务
+        HttpServer vertxTcpServer = new VertxTcpServer();
+        vertxTcpServer.doStart(RpcApplication.getRpcConfig().getServerPort());
     }
 }
