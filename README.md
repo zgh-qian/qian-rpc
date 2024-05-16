@@ -15,9 +15,7 @@
 ## 环境
 
 Java version: 11
-## 启动etcd
-etcdkeeper: http://localhost:8080/etcdkeeper/
-etcdkeeper.exe -p 8081
+
 ## 源码目录
 
 * example-common: 示例公共模块
