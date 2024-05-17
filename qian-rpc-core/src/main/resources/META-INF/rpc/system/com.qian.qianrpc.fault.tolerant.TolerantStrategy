@@ -1,4 +1,4 @@
-failBack=com.qian.qianrpc.fault.tolerant.FailBackTolerantStrategy
-failFast=com.qian.qianrpc.fault.tolerant.FailFastTolerantStrategy
-failOver=com.qian.qianrpc.fault.tolerant.FailOverTolerantStrategy
-failSafe=com.qian.qianrpc.fault.tolerant.FailSafeTolerantStrategy
+failBack=com.qian.qianrpc.fault.tolerant.impl.FailBackTolerantStrategy
+failFast=com.qian.qianrpc.fault.tolerant.impl.FailFastTolerantStrategy
+failOver=com.qian.qianrpc.fault.tolerant.impl.FailOverTolerantStrategy
+failSafe=com.qian.qianrpc.fault.tolerant.impl.FailSafeTolerantStrategy
