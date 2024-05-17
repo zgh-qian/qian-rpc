@@ -1,9 +1,6 @@
 package com.qian.qianrpc.proxy;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
 import com.qian.qianrpc.RpcApplication;
 import com.qian.qianrpc.config.RpcConfig;
 import com.qian.qianrpc.constant.RpcConstant;
@@ -16,24 +13,15 @@ import com.qian.qianrpc.loadbalancer.LoadBalancerFactory;
 import com.qian.qianrpc.model.RpcRequest;
 import com.qian.qianrpc.model.RpcResponse;
 import com.qian.qianrpc.model.ServiceMetaInfo;
-import com.qian.qianrpc.protocol.*;
 import com.qian.qianrpc.registry.Registry;
 import com.qian.qianrpc.registry.RegistryFactory;
-import com.qian.qianrpc.serializer.Serializer;
-import com.qian.qianrpc.serializer.SerializerFactory;
-import com.qian.qianrpc.server.tcp.VertTcpClient;
-import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
-import io.vertx.core.net.NetClient;
-import io.vertx.core.net.NetSocket;
+import com.qian.qianrpc.server.tcp.VertxTcpClient;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * 服务代理（JDK动态代理）
@@ -50,15 +38,15 @@ public class ServiceProxy implements InvocationHandler {
                 .parameterTypes(method.getParameterTypes())
                 .args(args)
                 .build();
-        RpcConfig rpcConfig = RpcApplication.getRpcConfig();
         // 从注册中心获取服务提供者请求地址
+        RpcConfig rpcConfig = RpcApplication.getRpcConfig();
         Registry registry = RegistryFactory.getInstance(rpcConfig.getRegistryConfig().getRegistry());
         ServiceMetaInfo serviceMetaInfo = new ServiceMetaInfo();
         serviceMetaInfo.setServiceName(serviceName);
         serviceMetaInfo.setServiceVersion(RpcConstant.DEFAULT_SERVICE_VERSION);
         List<ServiceMetaInfo> serviceMetaInfoList = registry.serviceDiscovery(serviceMetaInfo.getServiceKey());
         if (CollUtil.isEmpty(serviceMetaInfoList)) {
-            throw new RuntimeException("暂无服务提供者");
+            throw new RuntimeException("暂无服务地址");
         }
         // 负载均衡
         LoadBalancer loadBalancer = LoadBalancerFactory.getInstance(rpcConfig.getLoadBalancer());
@@ -66,16 +54,24 @@ public class ServiceProxy implements InvocationHandler {
         Map<String, Object> requestParams = new HashMap<>();
         requestParams.put("methodName", rpcRequest.getMethodName());
         ServiceMetaInfo selectedServiceMetaInfo = loadBalancer.select(requestParams, serviceMetaInfoList);
+        /*
+        // http 请求
+        // 指定序列化器
+        Serializer serializer = SerializerFactory.getInstance(RpcApplication.getRpcConfig().getSerializer());
+        byte[] bodyBytes = serializer.serialize(rpcRequest);
+        RpcResponse rpcResponse = doHttpRequest(selectedServiceMetaInfo, bodyBytes, serializer);
+        */
+        // rpc 请求
+        // 使用重试机制
         RpcResponse rpcResponse;
         try {
-            // 使用重试策略
             RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
             rpcResponse = retryStrategy.doRetry(() ->
-                    VertTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo)
+                    VertxTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo)
             );
         } catch (Exception e) {
-            // 使用容错
-            TolerantStrategy tolerantStrategy = TolerantStrategyFactory.getInstance(rpcConfig.getTolerantStrategy());
+            // 容错机制
+            TolerantStrategy tolerantStrategy = TolerantStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
             rpcResponse = tolerantStrategy.doTolerant(null, e);
         }
         return rpcResponse.getData();

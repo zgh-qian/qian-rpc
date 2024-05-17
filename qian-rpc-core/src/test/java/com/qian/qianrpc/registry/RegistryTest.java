@@ -3,6 +3,7 @@ package com.qian.qianrpc.registry;
 
 import com.qian.qianrpc.config.RegistryConfig;
 import com.qian.qianrpc.model.ServiceMetaInfo;
+import com.qian.qianrpc.registry.impl.EtcdRegistry;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

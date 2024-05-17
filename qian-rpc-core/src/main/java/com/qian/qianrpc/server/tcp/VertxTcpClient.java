@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Vert.x TCP客户端
  */
-public class VertTcpClient {
+public class VertxTcpClient {
     /**
      * 发送 TCP 请求
      *
@@ -75,7 +75,7 @@ public class VertTcpClient {
                 });
 
         RpcResponse rpcResponse = responseFuture.get();
-        // 记得关闭连接
+        // 关闭连接
         netClient.close();
         return rpcResponse;
     }

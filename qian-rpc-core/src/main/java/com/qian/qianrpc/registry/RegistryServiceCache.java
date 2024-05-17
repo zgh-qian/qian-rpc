@@ -20,7 +20,7 @@ public class RegistryServiceCache {
      *
      * @param newServiceCache     新的服务缓存
      */
-    void writeCache(List<ServiceMetaInfo> newServiceCache) {
+    public void writeCache(List<ServiceMetaInfo> newServiceCache) {
         this.serviceCache = newServiceCache;
     }
 
@@ -29,14 +29,14 @@ public class RegistryServiceCache {
      *
      * @return  服务缓存
      */
-    List<ServiceMetaInfo> readCache() {
+    public List<ServiceMetaInfo> readCache() {
         return this.serviceCache;
     }
 
     /**
      * 清空缓存
      */
-    void clearCache() {
+    public void clearCache() {
         this.serviceCache = null;
     }
 }

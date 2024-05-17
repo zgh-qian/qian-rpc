@@ -30,14 +30,14 @@
 
 ```
 qian-rpc
-├─qian-rpc-core					: 	RPC核心模块
-├─qian-rpc-easy					: 	RPC框架简易版
-├─example-common				: 	示例公共模块
-├─example-provider				: 	示例服务提供方
-├─example-consumer				: 	示例服务消费方
-├─qian-rpc-spring-boot-starter	: 	Spring Boot Starter，注解驱动的 RPC 框架
-├─example-spring-boot-provider	: 	Spring Boot 示例服务提供方
-└─example-spring-boot-consumer	: 	Spring Boot 示例服务消费方
+├─qian-rpc-core					RPC核心模块
+├─qian-rpc-easy					RPC框架简易版
+├─example-common				示例公共模块
+├─example-provider				示例服务提供方
+├─example-consumer				示例服务消费方
+├─qian-rpc-spring-boot-starter	                Spring Boot Starter，注解驱动的 RPC 框架
+├─example-spring-boot-provider	                Spring Boot 示例服务提供方
+└─example-spring-boot-consumer	                Spring Boot 示例服务消费方
 ```
 
 ### 使用

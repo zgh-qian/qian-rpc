@@ -51,7 +51,6 @@ public class TcpServerHandler implements Handler<NetSocket> {
                 rpcResponse.setMessage(e.getMessage());
                 rpcResponse.setException(e);
             }
-
             // 发送响应，编码
             header.setType((byte) ProtocolMessageTypeEnum.RESPONSE.getKey());
             header.setStatus((byte) ProtocolMessageStatusEnum.OK.getValue());

@@ -1,6 +1,7 @@
 package com.qian.qianrpc.registry;
 
 
+import com.qian.qianrpc.registry.impl.EtcdRegistry;
 import com.qian.qianrpc.spi.SpiLoader;
 
 /**

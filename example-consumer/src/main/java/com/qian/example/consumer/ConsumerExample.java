@@ -14,12 +14,12 @@ public class ConsumerExample {
         // 获取代理
         UserService userService = ServiceProxyFactory.getProxy(UserService.class);
         User user = new User();
-        user.setName("zgh");
+        user.setName("qian");
         // 调用
         User newUser = userService.getUser(user);
         if (newUser != null) {
             System.out.println(newUser.getName());
-        }else{
+        } else {
             System.out.println("user not found");
         }
     }

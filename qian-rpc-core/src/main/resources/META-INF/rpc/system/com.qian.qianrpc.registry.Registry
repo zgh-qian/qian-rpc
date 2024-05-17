@@ -1,2 +1,2 @@
-etcd=com.qian.qianrpc.registry.EtcdRegistry
-zookeeper=com.qian.qianrpc.registry.ZooKeeperRegistry
+etcd=com.qian.qianrpc.registry.impl.EtcdRegistry
+zookeeper=com.qian.qianrpc.registry.impl.ZooKeeperRegistry

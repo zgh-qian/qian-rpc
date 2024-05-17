@@ -1,4 +1,4 @@
-package com.qian.qianrpc.registry;
+package com.qian.qianrpc.registry.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ConcurrentHashSet;
@@ -7,6 +7,8 @@ import cn.hutool.cron.task.Task;
 import cn.hutool.json.JSONUtil;
 import com.qian.qianrpc.config.RegistryConfig;
 import com.qian.qianrpc.model.ServiceMetaInfo;
+import com.qian.qianrpc.registry.Registry;
+import com.qian.qianrpc.registry.RegistryServiceCache;
 import io.etcd.jetcd.*;
 import io.etcd.jetcd.kv.GetResponse;
 import io.etcd.jetcd.options.GetOption;
@@ -71,15 +73,15 @@ public class EtcdRegistry implements Registry {
      */
     @Override
     public void register(ServiceMetaInfo serviceMetaInfo) throws Exception {
-        // 创建 lease 客户端
+        // 创建 Lease 和 KV 客户端
         Lease leaseClient = client.getLeaseClient();
-        // 申请租约 30s
+        // 创建一个 30 秒的租约
         long leaseId = leaseClient.grant(30).get().getID();
+        // 设置要存储的键值对
         String registerKey = ETCD_ROOT_PATH + serviceMetaInfo.getServiceNodeKey();
-        // 设置 KV 值
         ByteSequence key = ByteSequence.from(registerKey, StandardCharsets.UTF_8);
         ByteSequence value = ByteSequence.from(JSONUtil.toJsonStr(serviceMetaInfo), StandardCharsets.UTF_8);
-        // 将 KV 值和租约绑定
+        // 将键值对与租约关联起来，并设置过期时间
         PutOption putOption = PutOption.builder().withLeaseId(leaseId).build();
         kvClient.put(key, value, putOption).get();
         // 添加节点信息到本地缓存
@@ -117,7 +119,11 @@ public class EtcdRegistry implements Registry {
         try {
             // 前缀查询
             GetOption getOption = GetOption.builder().isPrefix(true).build();
-            List<KeyValue> keyValues = kvClient.get(ByteSequence.from(searchPrefix, StandardCharsets.UTF_8), getOption).get().getKvs();
+            List<KeyValue> keyValues = kvClient.get(
+                            ByteSequence.from(searchPrefix, StandardCharsets.UTF_8),
+                            getOption)
+                    .get()
+                    .getKvs();
             // 解析服务信息
             List<ServiceMetaInfo> serviceMetaInfoList = keyValues.stream()
                     .map(keyValue -> {
@@ -141,32 +147,32 @@ public class EtcdRegistry implements Registry {
      */
     @Override
     public void heartBeat() {
-        // 10s 一次心跳
+        // 10 秒续签一次
         CronUtil.schedule("*/10 * * * * *", new Task() {
-
             @Override
             public void execute() {
-                // 遍历本地缓存的节点信息，续约租约
-                for (String registerKey : localRegisterNodeKeySet) {
+                // 遍历本节点所有的 key
+                for (String key : localRegisterNodeKeySet) {
                     try {
-                        List<KeyValue> keyValueList = kvClient.get(ByteSequence.from(registerKey, StandardCharsets.UTF_8)).get().getKvs();
-                        // 该节点过期
-                        if (CollUtil.isEmpty(keyValueList)) {
+                        List<KeyValue> keyValues = kvClient.get(ByteSequence.from(key, StandardCharsets.UTF_8))
+                                .get()
+                                .getKvs();
+                        // 该节点已过期（需要重启节点才能重新注册）
+                        if (CollUtil.isEmpty(keyValues)) {
                             continue;
                         }
-                        // 节点未过期，续约租约
-                        KeyValue keyValue = keyValueList.get(0);
+                        // 节点未过期，重新注册（相当于续签）
+                        KeyValue keyValue = keyValues.get(0);
                         String value = keyValue.getValue().toString(StandardCharsets.UTF_8);
                         ServiceMetaInfo serviceMetaInfo = JSONUtil.toBean(value, ServiceMetaInfo.class);
                         register(serviceMetaInfo);
-                        //System.out.println(registerKey + " 续约租约成功");
                     } catch (Exception e) {
-                        throw new RuntimeException(registerKey + " 续约租约失败:" + e);
+                        throw new RuntimeException(key + "续签失败", e);
                     }
                 }
             }
         });
-        // 启动定时任务
+        // 支持秒级别定时任务
         CronUtil.setMatchSecond(true);
         CronUtil.start();
     }
