@@ -1,6 +1,7 @@
-package com.qian.qianrpc.loadbalancer;
+package com.qian.qianrpc.loadbalancer.impl;
 
 
+import com.qian.qianrpc.loadbalancer.LoadBalancer;
 import com.qian.qianrpc.model.ServiceMetaInfo;
 
 import java.util.List;
@@ -27,7 +28,6 @@ public class ConsistentHashLoadBalancer implements LoadBalancer {
         if (serviceMetaInfoList.isEmpty()) {
             return null;
         }
-
         // 构建虚拟节点环
         for (ServiceMetaInfo serviceMetaInfo : serviceMetaInfoList) {
             for (int i = 0; i < VIRTUAL_NODE_NUM; i++) {
@@ -35,10 +35,8 @@ public class ConsistentHashLoadBalancer implements LoadBalancer {
                 virtualNodes.put(hash, serviceMetaInfo);
             }
         }
-
         // 获取调用请求的 hash 值
         int hash = getHash(requestParams);
-
         // 选择最接近且大于等于调用请求 hash 值的虚拟节点
         Map.Entry<Integer, ServiceMetaInfo> entry = virtualNodes.ceilingEntry(hash);
         if (entry == null) {
@@ -48,12 +46,11 @@ public class ConsistentHashLoadBalancer implements LoadBalancer {
         return entry.getValue();
     }
 
-
     /**
-     * Hash 算法，可自行实现
+     * Hash 算法
      *
-     * @param key
-     * @return
+     * @param key 待 Hash 的对象
+     * @return hash 值
      */
     private int getHash(Object key) {
         return key.hashCode();

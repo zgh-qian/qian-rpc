@@ -1,6 +1,7 @@
-package com.qian.qianrpc.loadbalancer;
+package com.qian.qianrpc.loadbalancer.impl;
 
 
+import com.qian.qianrpc.loadbalancer.LoadBalancer;
 import com.qian.qianrpc.model.ServiceMetaInfo;
 
 import java.util.List;

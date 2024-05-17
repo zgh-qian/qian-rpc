@@ -1,5 +1,6 @@
 package com.qian.qianrpc.loadbalancer;
 
+import com.qian.qianrpc.loadbalancer.impl.RoundRobinLoadBalancer;
 import com.qian.qianrpc.spi.SpiLoader;
 
 /**
@@ -19,8 +20,8 @@ public class LoadBalancerFactory {
     /**
      * 获取实例
      *
-     * @param key
-     * @return
+     * @param key 负载均衡器的key
+     * @return 负载均衡器实例
      */
     public static LoadBalancer getInstance(String key) {
         return SpiLoader.getInstance(LoadBalancer.class, key);

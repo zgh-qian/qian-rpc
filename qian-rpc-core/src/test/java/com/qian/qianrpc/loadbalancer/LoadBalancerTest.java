@@ -1,5 +1,6 @@
 package com.qian.qianrpc.loadbalancer;
 
+import com.qian.qianrpc.loadbalancer.impl.ConsistentHashLoadBalancer;
 import com.qian.qianrpc.model.ServiceMetaInfo;
 import org.junit.Assert;
 import org.junit.Test;
