@@ -7,6 +7,8 @@ import cn.hutool.http.HttpResponse;
 import com.qian.qianrpc.RpcApplication;
 import com.qian.qianrpc.config.RpcConfig;
 import com.qian.qianrpc.constant.RpcConstant;
+import com.qian.qianrpc.fault.retry.RetryStrategy;
+import com.qian.qianrpc.fault.retry.RetryStrategyFactory;
 import com.qian.qianrpc.loadbalancer.LoadBalancer;
 import com.qian.qianrpc.loadbalancer.LoadBalancerFactory;
 import com.qian.qianrpc.model.RpcRequest;
@@ -119,7 +121,11 @@ public class ServiceProxy implements InvocationHandler {
             RpcResponse rpcResponse = responseFuture.get();
             netClient.close();
             return rpcResponse.getData();*/
-            RpcResponse rpcResponse = VertTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo);
+            // 重试
+            RetryStrategy retryStrategy = RetryStrategyFactory.getInstance(rpcConfig.getRetryStrategy());
+            RpcResponse rpcResponse = retryStrategy.doRetry(() ->
+                    VertTcpClient.doRequest(rpcRequest, selectedServiceMetaInfo)
+            );
             return rpcResponse.getData();
         } catch (Exception e) {
             e.printStackTrace();
